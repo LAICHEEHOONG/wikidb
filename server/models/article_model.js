@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const articleSchema = mongoose.Schema({
-    article: {type: String, trim: true}
+    title: {type: String, trim: true}
 });
 
 const Articles = mongoose.model('Articles', articleSchema);
