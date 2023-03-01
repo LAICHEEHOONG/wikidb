@@ -8,7 +8,7 @@ const ariticle = require('./routes/article');
 mongoose.set('strictQuery', true);
 mongoose.connect(mongoUri);
 
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
 app.use('/api/articles', ariticle);
