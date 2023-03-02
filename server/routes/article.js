@@ -30,29 +30,88 @@ router.route('/')
 
         }
     })
-    .delete(async(req, res) => {
+    .delete(async (req, res) => {
         try {
             await Articles.deleteMany();
             res.send("Successfully deleted all articles.");
-        } catch(error) {
+        } catch (error) {
             res.json({ message: 'test delete error', error });
         }
     })
 
+
 router.route('/:articleTitle')
-    .get(async(req, res) => {
+    .get(async (req, res) => {
         try {
             const titleParams = req.params.articleTitle;
-            const findTitle = await Articles.findOne({title: titleParams});
-            
+            const findTitle = await Articles.findOne({ title: titleParams });
+
             console.log(findTitle);
             res.send(findTitle);
 
-        } catch(error) {
+        } catch (error) {
             console.log(error);
             res.json({ message: 'find one error', error });
         }
     })
+    .put(async (req, res) => {
+        try {
+            const titleParam = req.params.articleTitle;
+            let titlePut = req.body.title;
+            let contentPut = req.body.content;
+            console.log(titlePut)
+
+            if (!titlePut) {
+                titlePut = '';
+            }
+            if (!contentPut) {
+                contentPut = '';
+            }
+
+            const result = await Articles.updateOne(
+                { title: titleParam },
+                { $set: { title: titlePut, content: contentPut } }
+            );
+
+            console.log(result);
+            // const checkUpdate = await Articles.find({ title: titlePut });
+            // console.log(checkUpdate);
+            res.status(200).json(result);
+
+        } catch (error) {
+            console.error(error);
+            res.json({ message: 'test params put error' });
+        }
+    })
+    .patch(async (req, res) => {
+        try {
+            const titleParam = req.params.articleTitle;
+            const result = await Articles.updateOne(
+                { title: titleParam },
+                { $set: req.body }
+            );
+
+            res.send("Successfully updated article.")
+        } catch (error) {
+            console.error(error);
+            res.json({ message: 'test params patch error' });
+        }
+    })
+    .delete(async(req, res) => {
+        try {
+            const titleParam = req.params.articleTitle;
+            const deleteArticle = await Articles.deleteOne({title: titleParam});
+
+            console.log(deleteArticle);
+            res.send(`Title: ${titleParam} deleted.`)
+
+        } catch(error) {
+            console.log(error);
+            res.json({message: 'delete error', error})
+        }
+    })
+
+
 // testing save title data
 // router.route('/test')
 //     .post(async (req, res) => {
@@ -113,3 +172,20 @@ router.route('/:articleTitle')
 
 
 module.exports = router;
+
+
+// assume you have a Mongoose model named "User"
+// const User = require('./models/user');
+
+// update a user's email address
+// User.updateOne(
+//   { _id: 'USER_ID_HERE' }, // search criteria
+//   { $set: { email: 'new_email@example.com' } }, // update to apply
+//   (err, res) => {
+//     if (err) {
+//       console.error(err);
+//     } else {
+//       console.log(res);
+//     }
+//   }
+// );
